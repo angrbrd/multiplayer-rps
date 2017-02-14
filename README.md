@@ -4,4 +4,4 @@
 
 Please find the application deployed here:
 
-[firebase.link.here](firebase.link.here)
+[https://multiplayer-rps-9d62f.firebaseapp.com](https://multiplayer-rps-9d62f.firebaseapp.com)
