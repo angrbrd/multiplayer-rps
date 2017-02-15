@@ -4,6 +4,7 @@
 //
 */
 
+// Store the values for each of the two players
 var player1 = null;
 var player2 = null;
 
@@ -17,7 +18,7 @@ var player2 = null;
 var database = firebase.database();
 
 // Attach a listener to the database /players/ node to listen for any changes
-database.ref('/players/').on('value', function(snapshot) {
+database.ref("/players/").on("value", function(snapshot) {
 	// Check for existence of player 1 in the database
 	if (snapshot.child("player1").exists()) {
 		console.log("Player 1 exists");
@@ -74,7 +75,10 @@ $("#add-name").on("click", function(event) {
 		};
 
 		// Add player1 to the database
-		database.ref().child('/players/player1').set(player1);
+		database.ref().child("/players/player1").set(player1);
+
+		// If this user disconnects by closing or refreshing the browser, remove the user from the database
+		database.ref("/players/player1").onDisconnect().remove();
 	} else if( (player1 !== null) && (player2 === null) ) {
 		// Adding player2
 		console.log("Adding Player 2");
@@ -88,7 +92,10 @@ $("#add-name").on("click", function(event) {
 		};
 
 		// Add player2 to the database
-		database.ref().child('/players/player2').set(player2);
+		database.ref().child("/players/player2").set(player2);
+
+		// If this user disconnects by closing or refreshing the browser, remove the user from the database
+		database.ref("/players/player2").onDisconnect().remove();
 	}
 
 	// Reset the name input box
