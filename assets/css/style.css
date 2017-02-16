@@ -128,8 +128,10 @@ body {
 }
 
 
-.chatDisplay {
+#chatDisplay {
 	height: 150px;
+	width: 100%;
+	overflow: auto;
 	text-align: left;
   	border-radius: 10px;
   	background-color: #cdd9ea;
@@ -180,6 +182,18 @@ body {
 	top: -40px;
 }
 
+.chatColor1 {
+	color: #b03138;
+}
+
+.chatColor2 {
+	color: #084596;
+}
+
+.chatColorDisconnected {
+	color: #efad0d;
+	font-style: italic;
+}
 #footerSpacer {
   background: transparent;
   width: 100%;
