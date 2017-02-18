@@ -131,6 +131,13 @@ body {
 	margin: 1.25em 0em 0em 0em;
 }
 
+#waitingNotice {
+	font-size: 1.5em;
+	color: #efad0d;
+	font-style: italic;
+	font-weight: normal;
+}
+
 
 #chatDisplay {
 	height: 150px;

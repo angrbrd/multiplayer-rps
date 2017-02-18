@@ -91,7 +91,7 @@ database.ref("/players/").on("value", function(snapshot) {
 		$("#playerPanel1").addClass("playerPanelTurn");
 
 		// Update the center display
-		$("#roundOutcome").html("Waiting on " + player1Name + " to choose");
+		$("#waitingNotice").html("Waiting on " + player1Name + " to choose...");
 	}
 
 	// If both players leave the game, empty the chat session
@@ -148,7 +148,7 @@ database.ref("/turn/").on("value", function(snapshot) {
 		if (player1 && player2) {
 			$("#playerPanel1").addClass("playerPanelTurn");
 			$("#playerPanel2").removeClass("playerPanelTurn");
-			$("#roundOutcome").html("Waiting on " + player1Name + " to choose");
+			$("#waitingNotice").html("Waiting on " + player1Name + " to choose...");
 		}
 	} else if (snapshot.val() === 2) {
 		console.log("TURN 2");
@@ -158,7 +158,7 @@ database.ref("/turn/").on("value", function(snapshot) {
 		if (player1 && player2) {
 			$("#playerPanel1").removeClass("playerPanelTurn");
 			$("#playerPanel2").addClass("playerPanelTurn");
-			$("#roundOutcome").html("Waiting on " + player2Name + " to choose");
+			$("#waitingNotice").html("Waiting on " + player2Name + " to choose...");
 		}
 	}
 });
@@ -295,16 +295,22 @@ function rpsCompare() {
 		if (player2.choice === "Rock") {
 			// Tie
 			console.log("tie");
+			$("#roundOutcome").html("Tie game!");
+
 			database.ref().child("/players/player1/tie").set(player1.tie + 1);
 			database.ref().child("/players/player2/tie").set(player2.tie + 1);
 		} else if (player2.choice === "Paper") {
 			// Player2 wins
 			console.log("paper wins");
+			$("#roundOutcome").html("Paper wins!");
+
 			database.ref().child("/players/player1/loss").set(player1.loss + 1);
 			database.ref().child("/players/player2/win").set(player2.win + 1);
 		} else { // scissors
 			// Player1 wins
 			console.log("rock wins");
+			$("#roundOutcome").html("Rock wins!");
+
 			database.ref().child("/players/player1/win").set(player1.win + 1);
 			database.ref().child("/players/player2/loss").set(player2.loss + 1);
 		}
@@ -313,16 +319,22 @@ function rpsCompare() {
 		if (player2.choice === "Rock") {
 			// Player1 wins
 			console.log("paper wins");
+			$("#roundOutcome").html("Paper wins!");
+
 			database.ref().child("/players/player1/win").set(player1.win + 1);
 			database.ref().child("/players/player2/loss").set(player2.loss + 1);
 		} else if (player2.choice === "Paper") {
 			// Tie
 			console.log("tie");
+			$("#roundOutcome").html("Tie game!");
+
 			database.ref().child("/players/player1/tie").set(player1.tie + 1);
 			database.ref().child("/players/player2/tie").set(player2.tie + 1);
 		} else { // Scissors
 			// Player2 wins
 			console.log("scissors win");
+			$("#roundOutcome").html("Scissors win!");
+
 			database.ref().child("/players/player1/loss").set(player1.loss + 1);
 			database.ref().child("/players/player2/win").set(player2.win + 1);
 		}
@@ -331,16 +343,22 @@ function rpsCompare() {
 		if (player2.choice === "Rock") {
 			// Player2 wins
 			console.log("rock wins");
+			$("#roundOutcome").html("Rock wins!");
+
 			database.ref().child("/players/player1/loss").set(player1.loss + 1);
 			database.ref().child("/players/player2/win").set(player2.win + 1);
 		} else if (player2.choice === "Paper") {
 			// Player1 wins
 			console.log("scissors win");
+			$("#roundOutcome").html("Scissors win!");
+
 			database.ref().child("/players/player1/win").set(player1.win + 1);
 			database.ref().child("/players/player2/loss").set(player2.loss + 1);
 		} else {
 			// Tie
 			console.log("tie");
+			$("#roundOutcome").html("Tie game!");
+
 			database.ref().child("/players/player1/tie").set(player1.tie + 1);
 			database.ref().child("/players/player2/tie").set(player2.tie + 1);
 		}
