@@ -144,8 +144,8 @@ database.ref("/turn/").on("value", function(snapshot) {
 $("#add-name").on("click", function(event) {
 	event.preventDefault();
 
-	// First, make sure that the name field is non-empty
-	if ($("#name-input").val().trim() !== "") {
+	// First, make sure that the name field is non-empty and we are still waiting for a player
+	if ( ($("#name-input").val().trim() !== "") && !(player1 && player2) ) {
 		// Adding player1
 		if (player1 === null) {
 			console.log("Adding Player 1");
