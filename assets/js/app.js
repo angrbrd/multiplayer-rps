@@ -53,6 +53,7 @@ database.ref("/players/").on("value", function(snapshot) {
 		// Update player1 display
 		$("#playerOneName").text("Waiting for Player 1...");
 		$("#playerPanel1").removeClass("playerPanelTurn");
+		$("#playerPanel2").removeClass("playerPanelTurn");
 		$("#roundOutcome").html("Rock-Paper-Scissors");
 	}
 
@@ -75,6 +76,7 @@ database.ref("/players/").on("value", function(snapshot) {
 
 		// Update player2 display
 		$("#playerTwoName").text("Waiting for Player 2...");
+		$("#playerPanel1").removeClass("playerPanelTurn");
 		$("#playerPanel2").removeClass("playerPanelTurn");
 		$("#roundOutcome").html("Rock-Paper-Scissors");
 	}
@@ -94,6 +96,9 @@ database.ref("/players/").on("value", function(snapshot) {
 		database.ref("/turn/").remove();
 
 		$("#chatDisplay").empty();
+		$("#playerPanel1").removeClass("playerPanelTurn");
+		$("#playerPanel2").removeClass("playerPanelTurn");
+		$("#roundOutcome").html("Rock-Paper-Scissors");
 	}
 });
 
@@ -135,10 +140,22 @@ database.ref("/turn/").on("value", function(snapshot) {
 		console.log("TURN 1");
 		turn = 1;
 
+		// Update the display if both players are in the game
+		if (player1 && player2) {
+			$("#playerPanel1").addClass("playerPanelTurn");
+			$("#playerPanel2").removeClass("playerPanelTurn");
+			$("#roundOutcome").html("Waiting on " + player1Name + " to choose");
+		}
 	} else if (snapshot.val() === 2) {
 		console.log("TURN 2");
 		turn = 2;
 
+		// Update the display if both players are in the game
+		if (player1 && player2) {
+			$("#playerPanel1").removeClass("playerPanelTurn");
+			$("#playerPanel2").addClass("playerPanelTurn");
+			$("#roundOutcome").html("Waiting on " + player2Name + " to choose");
+		}
 	}
 });
 
