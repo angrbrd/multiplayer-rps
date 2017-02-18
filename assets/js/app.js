@@ -123,12 +123,14 @@ database.ref("/chat/").on("child_added", function(snapshot) {
 // Attach a listener to the database /turn/ node to listen for any changes
 database.ref("/turn/").on("value", function(snapshot) {
 	// Check if it's player1's turn
-	if (snapshot.val() === "1") {
+	if (snapshot.val() === 1) {
 		console.log("TURN 1");
 		turn = 1;
-	} else if (snapshot.val() === "2") {
+
+	} else if (snapshot.val() === 2) {
 		console.log("TURN 2");
 		turn = 2;
+
 	}
 });
 
@@ -223,18 +225,36 @@ $("#chat-send").on("click", function(event) {
 $("#playerPanel1").on("click", ".panelOption", function(event) {
 	event.preventDefault();
 
-	// Record player1's choice
-	var choice = $(this).text().trim();
+	// Make selections only when both players are in the game
+	if (player1 && player2 && (yourPlayerName === player1.name) && (turn === 1) ) {
+		// Record player1's choice
+		var choice = $(this).text().trim();
+		console.log("Player 1 selection: " + choice);
 
-	console.log("Player 1 selection: " + choice);
+		// Record the player choice into the database
+		database.ref().child("/players/player1/choice").set(choice);
+
+		// Set the turn value to 2, as it is now player2's turn
+		turn = 2;
+		database.ref().child("/turn").set(2);
+	}
 });
 
 // Monitor Player2's selection
 $("#playerPanel2").on("click", ".panelOption", function(event) {
 	event.preventDefault();
 
-	// Record player2's choice
-	var choice = $(this).text().trim();
+	// Make selections only when both players are in the game
+	if (player1 && player2 && (yourPlayerName === player2.name) && (turn === 2) ) {
+		// Record player2's choice
+		var choice = $(this).text().trim();
+		console.log("Player 2 selection: " + choice);
 
-	console.log("Player 2 selection: " + choice);
+		// Record the player choice into the database
+		database.ref().child("/players/player2/choice").set(choice);
+
+		// Set the turn value to 1, as it is now player1's turn
+		turn = 1;
+		database.ref().child("/turn").set(1);
+	}
 });
