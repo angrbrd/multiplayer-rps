@@ -12,6 +12,10 @@ var player2 = null;
 var player1Name = "";
 var player2Name = "";
 
+// Store the player choices
+var player1Choice = "";
+var player2Choice = "";
+
 // Store the name of the player in the user's browser
 var yourPlayerName = "";
 
@@ -49,6 +53,7 @@ database.ref("/players/").on("value", function(snapshot) {
 		// Update player1 display
 		$("#playerOneName").text("Waiting for Player 1...");
 		$("#playerPanel1").removeClass("playerPanelTurn");
+		$("#roundOutcome").html("Rock-Paper-Scissors");
 	}
 
 	// Check for existence of player 2 in the database
@@ -71,12 +76,16 @@ database.ref("/players/").on("value", function(snapshot) {
 		// Update player2 display
 		$("#playerTwoName").text("Waiting for Player 2...");
 		$("#playerPanel2").removeClass("playerPanelTurn");
+		$("#roundOutcome").html("Rock-Paper-Scissors");
 	}
 
 	// If both players are now present, it's player1's turn
 	if (player1 && player2) {
 		// Update the display with a green border around player 1
 		$("#playerPanel1").addClass("playerPanelTurn");
+
+		// Update the center display
+		$("#roundOutcome").html("Waiting on " + player1Name + " to choose");
 	}
 });
 
@@ -208,4 +217,24 @@ $("#chat-send").on("click", function(event) {
 		// Save the new chat entry
 		database.ref("/chat/" + chatKey).set(msg);
 	}
+});
+
+// Monitor Player1's selection
+$("#playerPanel1").on("click", ".panelOption", function(event) {
+	event.preventDefault();
+
+	// Record player1's choice
+	var choice = $(this).text().trim();
+
+	console.log("Player 1 selection: " + choice);
+});
+
+// Monitor Player2's selection
+$("#playerPanel2").on("click", ".panelOption", function(event) {
+	event.preventDefault();
+
+	// Record player2's choice
+	var choice = $(this).text().trim();
+
+	console.log("Player 2 selection: " + choice);
 });
