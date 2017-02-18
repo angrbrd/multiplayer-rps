@@ -12,12 +12,12 @@ var player2 = null;
 var player1Name = "";
 var player2Name = "";
 
+// Store the name of the player in the user's browser
+var yourPlayerName = "";
+
 // Store the player choices
 var player1Choice = "";
 var player2Choice = "";
-
-// Store the name of the player in the user's browser
-var yourPlayerName = "";
 
 // Who's turn is it
 var turn = 1;
@@ -86,6 +86,14 @@ database.ref("/players/").on("value", function(snapshot) {
 
 		// Update the center display
 		$("#roundOutcome").html("Waiting on " + player1Name + " to choose");
+	}
+
+	// If both players leave the game, empty the chat session
+	if (!player1 && !player2) {
+		database.ref("/chat/").remove();
+		database.ref("/turn/").remove();
+
+		$("#chatDisplay").empty();
 	}
 });
 
