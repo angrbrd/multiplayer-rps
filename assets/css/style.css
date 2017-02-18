@@ -63,10 +63,14 @@ body {
 }
 
 .playerPanel {
-	height: 281px;
+	height: 283px;
 	background-color: transparent;
 	border: 3px solid #b03138;
 	border-radius: 10px;
+}
+
+.playerPanelTurn {
+	border: 5px solid #27CC73;
 }
 
 .playerPanel .panelName {
@@ -194,6 +198,12 @@ body {
 	color: #efad0d;
 	font-style: italic;
 }
+
+.chatColorJoined {
+	color: #27CC73;
+	font-style: italic;
+}
+
 #footerSpacer {
   background: transparent;
   width: 100%;
