@@ -44,6 +44,7 @@ database.ref("/players/").on("value", function(snapshot) {
 
 		// Update player1 display
 		$("#playerOneName").text(player1Name);
+		$("#player1Stats").html("Win: " + player1.win + ", Loss: " + player1.loss + ", Tie: " + player1.tie);
 	} else {
 		console.log("Player 1 does NOT exist");
 
@@ -55,6 +56,7 @@ database.ref("/players/").on("value", function(snapshot) {
 		$("#playerPanel1").removeClass("playerPanelTurn");
 		$("#playerPanel2").removeClass("playerPanelTurn");
 		$("#roundOutcome").html("Rock-Paper-Scissors");
+		$("#player1Stats").html("Win: 0, Loss: 0, Tie: 0");
 	}
 
 	// Check for existence of player 2 in the database
@@ -68,6 +70,7 @@ database.ref("/players/").on("value", function(snapshot) {
 
 		// Update player2 display
 		$("#playerTwoName").text(player2Name);
+		$("#player2Stats").html("Win: " + player2.win + ", Loss: " + player2.loss + ", Tie: " + player2.tie);
 	} else {
 		console.log("Player 2 does NOT exist");
 
@@ -79,6 +82,7 @@ database.ref("/players/").on("value", function(snapshot) {
 		$("#playerPanel1").removeClass("playerPanelTurn");
 		$("#playerPanel2").removeClass("playerPanelTurn");
 		$("#roundOutcome").html("Rock-Paper-Scissors");
+		$("#player2Stats").html("Win: 0, Loss: 0, Tie: 0");
 	}
 
 	// If both players are now present, it's player1's turn
@@ -257,6 +261,7 @@ $("#playerPanel1").on("click", ".panelOption", function(event) {
 		console.log("Player 1 selection: " + choice);
 
 		// Record the player choice into the database
+		player1Choice = choice;
 		database.ref().child("/players/player1/choice").set(choice);
 
 		// Set the turn value to 2, as it is now player2's turn
@@ -276,6 +281,7 @@ $("#playerPanel2").on("click", ".panelOption", function(event) {
 		console.log("Player 2 selection: " + choice);
 
 		// Record the player choice into the database
+		player2Choice = choice;
 		database.ref().child("/players/player2/choice").set(choice);
 
 		// Set the turn value to 1, as it is now player1's turn
