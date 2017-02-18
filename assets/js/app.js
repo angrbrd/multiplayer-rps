@@ -15,6 +15,9 @@ var player2Name = "";
 // Store the name of the player in the user's browser
 var yourPlayerName = "";
 
+// Who's turn is it
+var turn = 1;
+
 /*
 //
 //  Firebase Database Section
@@ -45,6 +48,7 @@ database.ref("/players/").on("value", function(snapshot) {
 
 		// Update player1 display
 		$("#playerOneName").text("Waiting for Player 1...");
+		$("#playerPanel1").removeClass("playerPanelTurn");
 	}
 
 	// Check for existence of player 2 in the database
@@ -66,6 +70,13 @@ database.ref("/players/").on("value", function(snapshot) {
 
 		// Update player2 display
 		$("#playerTwoName").text("Waiting for Player 2...");
+		$("#playerPanel2").removeClass("playerPanelTurn");
+	}
+
+	// If both players are now present, it's player1's turn
+	if (player1 && player2) {
+		// Update the display with a green border around player 1
+		$("#playerPanel1").addClass("playerPanelTurn");
 	}
 });
 
@@ -85,9 +96,11 @@ database.ref("/chat/").on("child_added", function(snapshot) {
 	var chatMsg = snapshot.val();
 	var chatEntry = $("<div>").html(chatMsg);
 
-	// Change the color of the chat message depending on the user
+	// Change the color of the chat message depending on user or connect/disconnect event
 	if (chatMsg.includes("disconnected")) {
 		chatEntry.addClass("chatColorDisconnected");
+	} else if (chatMsg.includes("joined")) {
+		chatEntry.addClass("chatColorJoined");
 	} else if (chatMsg.startsWith(yourPlayerName)) {
 		chatEntry.addClass("chatColor1");
 	} else {
@@ -96,6 +109,18 @@ database.ref("/chat/").on("child_added", function(snapshot) {
 
 	$("#chatDisplay").append(chatEntry);
 	$("#chatDisplay").scrollTop($("#chatDisplay")[0].scrollHeight);
+});
+
+// Attach a listener to the database /turn/ node to listen for any changes
+database.ref("/turn/").on("value", function(snapshot) {
+	// Check if it's player1's turn
+	if (snapshot.val() === "1") {
+		console.log("TURN 1");
+		turn = 1;
+	} else if (snapshot.val() === "2") {
+		console.log("TURN 2");
+		turn = 2;
+	}
 });
 
 /*
@@ -126,6 +151,7 @@ $("#add-name").on("click", function(event) {
 			// Add player1 to the database
 			database.ref().child("/players/player1").set(player1);
 
+
 			// Set the turn value to 1, as player1 goes first
 			database.ref().child("/turn").set(1);
 
@@ -150,6 +176,16 @@ $("#add-name").on("click", function(event) {
 			// If this user disconnects by closing or refreshing the browser, remove the user from the database
 			database.ref("/players/player2").onDisconnect().remove();
 		}
+
+		// Add a user joining message to the chat
+		var msg = yourPlayerName + " has joined!";
+		console.log(msg);
+
+		// Get a key for the join chat entry
+		var chatKey = database.ref().child("/chat/").push().key;
+
+		// Save the join chat entry
+		database.ref("/chat/" + chatKey).set(msg);
 
 		// Reset the name input box
 		$("#name-input").val("");	
