@@ -40,7 +40,6 @@ database.ref("/players/").on("value", function(snapshot) {
 		// Record player1 data
 		player1 = snapshot.val().player1;
 		player1Name = player1.name;
-		console.log(JSON.stringify(player1));
 
 		// Update player1 display
 		$("#playerOneName").text(player1Name);
@@ -55,7 +54,9 @@ database.ref("/players/").on("value", function(snapshot) {
 		$("#playerOneName").text("Waiting for Player 1...");
 		$("#playerPanel1").removeClass("playerPanelTurn");
 		$("#playerPanel2").removeClass("playerPanelTurn");
+		database.ref("/outcome/").remove();
 		$("#roundOutcome").html("Rock-Paper-Scissors");
+		$("#waitingNotice").html("");
 		$("#player1Stats").html("Win: 0, Loss: 0, Tie: 0");
 	}
 
@@ -66,7 +67,6 @@ database.ref("/players/").on("value", function(snapshot) {
 		// Record player2 data
 		player2 = snapshot.val().player2;
 		player2Name = player2.name;
-		console.log(JSON.stringify(player2));
 
 		// Update player2 display
 		$("#playerTwoName").text(player2Name);
@@ -81,7 +81,9 @@ database.ref("/players/").on("value", function(snapshot) {
 		$("#playerTwoName").text("Waiting for Player 2...");
 		$("#playerPanel1").removeClass("playerPanelTurn");
 		$("#playerPanel2").removeClass("playerPanelTurn");
+		database.ref("/outcome/").remove();
 		$("#roundOutcome").html("Rock-Paper-Scissors");
+		$("#waitingNotice").html("");
 		$("#player2Stats").html("Win: 0, Loss: 0, Tie: 0");
 	}
 
@@ -98,11 +100,13 @@ database.ref("/players/").on("value", function(snapshot) {
 	if (!player1 && !player2) {
 		database.ref("/chat/").remove();
 		database.ref("/turn/").remove();
+		database.ref("/outcome/").remove();
 
 		$("#chatDisplay").empty();
 		$("#playerPanel1").removeClass("playerPanelTurn");
 		$("#playerPanel2").removeClass("playerPanelTurn");
 		$("#roundOutcome").html("Rock-Paper-Scissors");
+		$("#waitingNotice").html("");
 	}
 });
 
@@ -161,6 +165,11 @@ database.ref("/turn/").on("value", function(snapshot) {
 			$("#waitingNotice").html("Waiting on " + player2Name + " to choose...");
 		}
 	}
+});
+
+// Attach a listener to the database /outcome/ node to be notified of the game outcome
+database.ref("/outcome/").on("value", function(snapshot) {
+	$("#roundOutcome").html(snapshot.val());
 });
 
 /*
@@ -258,7 +267,6 @@ $("#playerPanel1").on("click", ".panelOption", function(event) {
 	if (player1 && player2 && (yourPlayerName === player1.name) && (turn === 1) ) {
 		// Record player1's choice
 		var choice = $(this).text().trim();
-		console.log("Player 1 selection: " + choice);
 
 		// Record the player choice into the database
 		player1Choice = choice;
@@ -278,7 +286,6 @@ $("#playerPanel2").on("click", ".panelOption", function(event) {
 	if (player1 && player2 && (yourPlayerName === player2.name) && (turn === 2) ) {
 		// Record player2's choice
 		var choice = $(this).text().trim();
-		console.log("Player 2 selection: " + choice);
 
 		// Record the player choice into the database
 		player2Choice = choice;
@@ -295,22 +302,22 @@ function rpsCompare() {
 		if (player2.choice === "Rock") {
 			// Tie
 			console.log("tie");
-			$("#roundOutcome").html("Tie game!");
 
+			database.ref().child("/outcome/").set("Tie game!");
 			database.ref().child("/players/player1/tie").set(player1.tie + 1);
 			database.ref().child("/players/player2/tie").set(player2.tie + 1);
 		} else if (player2.choice === "Paper") {
 			// Player2 wins
 			console.log("paper wins");
-			$("#roundOutcome").html("Paper wins!");
 
+			database.ref().child("/outcome/").set("Paper wins!");
 			database.ref().child("/players/player1/loss").set(player1.loss + 1);
 			database.ref().child("/players/player2/win").set(player2.win + 1);
 		} else { // scissors
 			// Player1 wins
 			console.log("rock wins");
-			$("#roundOutcome").html("Rock wins!");
 
+			database.ref().child("/outcome/").set("Rock wins!");
 			database.ref().child("/players/player1/win").set(player1.win + 1);
 			database.ref().child("/players/player2/loss").set(player2.loss + 1);
 		}
@@ -319,22 +326,22 @@ function rpsCompare() {
 		if (player2.choice === "Rock") {
 			// Player1 wins
 			console.log("paper wins");
-			$("#roundOutcome").html("Paper wins!");
 
+			database.ref().child("/outcome/").set("Paper wins!");
 			database.ref().child("/players/player1/win").set(player1.win + 1);
 			database.ref().child("/players/player2/loss").set(player2.loss + 1);
 		} else if (player2.choice === "Paper") {
 			// Tie
 			console.log("tie");
-			$("#roundOutcome").html("Tie game!");
 
+			database.ref().child("/outcome/").set("Tie game!");
 			database.ref().child("/players/player1/tie").set(player1.tie + 1);
 			database.ref().child("/players/player2/tie").set(player2.tie + 1);
 		} else { // Scissors
 			// Player2 wins
 			console.log("scissors win");
-			$("#roundOutcome").html("Scissors win!");
 
+			database.ref().child("/outcome/").set("Scissors win!");
 			database.ref().child("/players/player1/loss").set(player1.loss + 1);
 			database.ref().child("/players/player2/win").set(player2.win + 1);
 		}
@@ -343,22 +350,22 @@ function rpsCompare() {
 		if (player2.choice === "Rock") {
 			// Player2 wins
 			console.log("rock wins");
-			$("#roundOutcome").html("Rock wins!");
 
+			database.ref().child("/outcome/").set("Rock wins!");
 			database.ref().child("/players/player1/loss").set(player1.loss + 1);
 			database.ref().child("/players/player2/win").set(player2.win + 1);
 		} else if (player2.choice === "Paper") {
 			// Player1 wins
 			console.log("scissors win");
-			$("#roundOutcome").html("Scissors win!");
 
+			database.ref().child("/outcome/").set("Scissors win!");
 			database.ref().child("/players/player1/win").set(player1.win + 1);
 			database.ref().child("/players/player2/loss").set(player2.loss + 1);
 		} else {
 			// Tie
 			console.log("tie");
-			$("#roundOutcome").html("Tie game!");
 
+			database.ref().child("/outcome/").set("Tie game!");
 			database.ref().child("/players/player1/tie").set(player1.tie + 1);
 			database.ref().child("/players/player2/tie").set(player2.tie + 1);
 		}
