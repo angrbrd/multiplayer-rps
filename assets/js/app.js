@@ -284,8 +284,70 @@ $("#playerPanel2").on("click", ".panelOption", function(event) {
 		player2Choice = choice;
 		database.ref().child("/players/player2/choice").set(choice);
 
-		// Set the turn value to 1, as it is now player1's turn
-		turn = 1;
-		database.ref().child("/turn").set(1);
+		// Compare player1 and player 2 choices and record the outcome
+		rpsCompare();
 	}
 });
+
+// rpsCompare is the main rock/paper/scissors logic to see which player wins
+function rpsCompare() {
+	if (player1.choice === "Rock") {
+		if (player2.choice === "Rock") {
+			// Tie
+			console.log("tie");
+			database.ref().child("/players/player1/tie").set(player1.tie + 1);
+			database.ref().child("/players/player2/tie").set(player2.tie + 1);
+		} else if (player2.choice === "Paper") {
+			// Player2 wins
+			console.log("paper wins");
+			database.ref().child("/players/player1/loss").set(player1.loss + 1);
+			database.ref().child("/players/player2/win").set(player2.win + 1);
+		} else { // scissors
+			// Player1 wins
+			console.log("rock wins");
+			database.ref().child("/players/player1/win").set(player1.win + 1);
+			database.ref().child("/players/player2/loss").set(player2.loss + 1);
+		}
+
+	} else if (player1.choice === "Paper") {
+		if (player2.choice === "Rock") {
+			// Player1 wins
+			console.log("paper wins");
+			database.ref().child("/players/player1/win").set(player1.win + 1);
+			database.ref().child("/players/player2/loss").set(player2.loss + 1);
+		} else if (player2.choice === "Paper") {
+			// Tie
+			console.log("tie");
+			database.ref().child("/players/player1/tie").set(player1.tie + 1);
+			database.ref().child("/players/player2/tie").set(player2.tie + 1);
+		} else { // Scissors
+			// Player2 wins
+			console.log("scissors win");
+			database.ref().child("/players/player1/loss").set(player1.loss + 1);
+			database.ref().child("/players/player2/win").set(player2.win + 1);
+		}
+
+	} else if (player1.choice === "Scissors") {
+		if (player2.choice === "Rock") {
+			// Player2 wins
+			console.log("rock wins");
+			database.ref().child("/players/player1/loss").set(player1.loss + 1);
+			database.ref().child("/players/player2/win").set(player2.win + 1);
+		} else if (player2.choice === "Paper") {
+			// Player1 wins
+			console.log("scissors win");
+			database.ref().child("/players/player1/win").set(player1.win + 1);
+			database.ref().child("/players/player2/loss").set(player2.loss + 1);
+		} else {
+			// Tie
+			console.log("tie");
+			database.ref().child("/players/player1/tie").set(player1.tie + 1);
+			database.ref().child("/players/player2/tie").set(player2.tie + 1);
+		}
+
+	}
+
+	// Set the turn value to 1, as it is now player1's turn
+	turn = 1;
+	database.ref().child("/turn").set(1);
+}
